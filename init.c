@@ -9,20 +9,13 @@ U64 SideKey;
 U64 CastleKeys[16];
 
 
-U64 rand_uint64(void) {
-    U64 r = 0;
-    for (int i=0; i<64; i += 30) {
-        r = r*((U64)RAND_MAX + 1) + rand();
-    }
-    return r;
-}
 
 
 void InitHashKeys(){
     int index = 0;
     int index2 = 0;
     for(index = 0; index < 13; ++index){
-        for(index = 0; index < 13; ++index){
+        for(index2 = 0; index2 < 120; ++index2) {
             PieceKeys[index][index2] = RAND_64;
         }
     }

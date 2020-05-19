@@ -3,31 +3,23 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define DEBUG
-
-
-#ifndef DEBUG
-#define ASSERT(n)
-#else
-#define ASSERT(n)\
-if(!(n)) { \
-printf("%s - Failed ", #n); \
-printf("in File %s ", __FILE__);\
-printf("on Line %d", __LINE__);\
-exit(1);}
-#endif
-
-
-#define RAND_64 rand_uint64()
-
-
-typedef unsigned long long U64;
 
 
 #define NAME "Vice 1.0"
+#define DEBUG
 #define BRD_SQ_NUM 120
 #define MAXGAMEMOVES 2048
+#define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
+
+//function macros
+#define RAND_64 	((U64)rand() | \
+					(U64)rand() << 15 | \
+					(U64)rand() << 30 | \
+					(U64)rand() << 45 | \
+					((U64)rand() & 0xf) << 60 )
+
+typedef unsigned long long U64;
 enum {EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK} ;
 enum {FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE};
 enum {RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE};
@@ -42,7 +34,7 @@ enum {
   A5 = 61, B5, C5, D5, E5, F5, G5, H5,
   A6 = 71, B6, C6, D6, E6, F6, G6, H6,
   A7 = 81, B7, C7, D7, E7, F7, G7, H7,
-  A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ
+  A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ, OFFBOARD
 };
 
 
@@ -99,12 +91,17 @@ extern U64 Clearmask[64];
 extern U64 PieceKeys[13][120];
 extern U64 SideKey;
 extern U64 CastleKeys[16];
+extern char  PceChar[];
+extern char  SideChar[];
+extern char  RankChar[];
+extern char  FileChar[];
 
 /*macros*/
 
 
 #define FR2SQ(f,r) ( (21 + (f) ) + ( (r) * 10 ) )
 #define SQ64(sq120) Sq120ToSq64[sq120]
+#define SQ120(sq64) (Sq64ToSq120[sq64])
 #define POP(b) PopBit(b)
 #define CNT(b) Countbis(b)
 #define CLRBIT(bb, sq) ((bb) &= ClearMask[(sq)])
@@ -112,12 +109,25 @@ extern U64 CastleKeys[16];
 
 
 
+#ifndef DEBUG
+#define ASSERT(n)
+#else
+#define ASSERT(n)\
+if(!(n)) { \
+printf("%s - Failed ", #n); \
+printf("in File %s ", __FILE__);\
+printf("on Line %d", __LINE__);\
+exit(1);}
+#endif
 /*functions*/
 
+extern U64 GeneratePosKey(const S_BOARD *pos);
 extern void AllInit();
 extern void PrintBitBoard(U64 bb);
 extern U64 rand_uint64(void);
 extern int PopBit(U64* bb);
 extern int CountBits(U64 b);
-
+extern void ResetBoard(S_BOARD* pos);
+extern int ParseFen(char* fen, S_BOARD *pos);
+extern void PrintBoard(const S_BOARD *pos);
 #endif
