@@ -1,15 +1,16 @@
 #include "defs.h"
+#include <stdlib.h>
 
 
-void ResetBoard(S_BOARD* pos){
+void ResetBoard(S_BOARD *pos){
+
     int index = 0;
-
     for(index=0; index < BRD_SQ_NUM; ++index){
-        pos->pieces[index] == OFFBOARD;
+        pos->pieces[index] = OFFBOARD;
     }
 
     for(index=0; index < 64; ++index){
-        pos->pieces[SQ120(index)] == EMPTY;
+        pos->pieces[SQ120(index)] = EMPTY;
     }
 
     for(index = 0; index < 3; ++index){
@@ -106,20 +107,20 @@ int ParseFen(char* fen, S_BOARD *pos) {
     ASSERT(*fen == 'w' || *fen == 'b');
     pos -> side == (*fen == 'w') ? WHITE : BLACK;
     fen += 2;
-    for (i == 0; i < 4; i++){
-        if (*fen == ' '){
+
+    for (i = 0; i < 4; i++) {
+        if (*fen == ' ') {
             break;
         }
-
-        switch(*fen){
-            case 'K': pos -> castlePerm |= WKCA;
-            case 'Q': pos -> castlePerm |= WQCA;
-            case 'k': pos -> castlePerm |= BKCA;
-            case 'q': pos -> castlePerm |= BQCA;
+        switch(*fen) {
+            case 'K': pos->castlePerm |= WKCA; break;
+            case 'Q': pos->castlePerm |= WQCA; break;
+            case 'k': pos->castlePerm |= BKCA; break;
+            case 'q': pos->castlePerm |= BQCA; break;
+            default:	     break;
         }
         fen++;
     }
-    fen++;
     fen++;
 
     ASSERT(pos-> castlePerm >= 0 && pos->castlePerm <= 15);
